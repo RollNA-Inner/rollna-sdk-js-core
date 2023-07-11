@@ -3,6 +3,7 @@ var https_request = require('request');
 
 const rollnaInfoUrl = "https://rollna.io/get_rollna_info";
 const chainInfosUrl = "https://rollna.io/get_chain_infos";
+export const nodeInterfaceContractAddr = "0xfffffffff";
 
 export type AccountType = 'EOA' | 'AA';
 

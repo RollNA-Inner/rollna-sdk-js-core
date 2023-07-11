@@ -2,6 +2,8 @@ import { Numbers } from "web3";
 import {CommonInput, SupportedChainInfo, RollnaInfo, RollnaChainInfo, RollOutProof} from "../types";
 import { ContractInstanceFactory } from "../contract/instanceFactory"
 import * as Web3 from "web3"
+import { NodeInterfaceContract } from "../contract/nodeInterface"
+import claimAbi from "../abi/IOutbox.json"
 
 export function formatRollInInput(
     fromAddr : string, 
@@ -110,12 +112,23 @@ export async function getRollnaInfo() : Promise<RollnaInfo|undefined> {
     return await RollnaChainInfo.getRollNaInfo()
 }
 
-export async function getRollOutProof(size: Numbers, leaf: Numbers) : Promise<RollOutProof|undefined> {
-    // need further contract information
-    return
+export async function getRollOutProof(size: Numbers, leaf: Numbers) : Promise<any> {
+    return NodeInterfaceContract.getProof(size, leaf)
+
 }
 
-export async function formatClaimRollOutInput(from: string,txhash: string,proof: string, chainid: Numbers) : Promise<CommonInput|undefined> {
-    // need further contract information
-    return
+export async function formatClaimTokenInput(
+    proof : Uint8Array, 
+    index : Numbers, 
+    lrSender : string, 
+    to : string, 
+    lrBlock: Numbers, 
+    l1Block: Numbers, 
+    lrTimestamp: Numbers, 
+    value: Numbers
+    ) : Promise<any> {
+    var rollnaInfo = await RollnaChainInfo.getRollNaInfo()
+    var contract = new Web3.eth.contract.Contract(claimAbi)
+    //@ts-ignore
+    return contract.methods.executeTransaction(proof, index, lrSender, to, lrBlock, l1Block, lrTimestamp, value).encodeABI()       
 }
