@@ -5,8 +5,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.NativeContractInstance = void 0;
 const baseRollUp_1 = require("./baseRollUp");
-const IInbox_json_1 = __importDefault(require("../abi/src/bridge/IInBox.sol/IInbox.json"));
-const ArbSys_json_1 = __importDefault(require("../abi/src/precompiles/ArbSys.sol/ArbSys.json"));
+const IInbox_json_1 = __importDefault(require("../abi/IInbox.json"));
+const ArbSys_json_1 = __importDefault(require("../abi/ArbSys.json"));
 const web3_eth_contract_1 = require("web3-eth-contract");
 class NativeContractInstance extends baseRollUp_1.BaseContractInstance {
     rollIn(lrTo) {

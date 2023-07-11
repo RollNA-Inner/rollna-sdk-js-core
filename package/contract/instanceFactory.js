@@ -2,6 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ContractInstanceFactory = void 0;
 const baseRollUp_1 = require("./baseRollUp");
+const nativeRollUp_1 = require("./nativeRollUp");
 class DemoContractInstance extends baseRollUp_1.BaseContractInstance {
     rollIn(le_from, lr_to, value) {
         return "";
@@ -40,7 +41,7 @@ class ContractInstanceFactory {
     static getNativeInstance(chainId) {
         let contractAddrs = nativeTokenTypeList.get(chainId);
         if (contractAddrs != undefined && contractAddrs.length == 2) {
-            return new DemoContractInstance(contractAddrs[0], contractAddrs[1]);
+            return new nativeRollUp_1.NativeContractInstance(contractAddrs[0], contractAddrs[1]);
         }
     }
     static getERC20Instance(chainId, tokenAddr) {

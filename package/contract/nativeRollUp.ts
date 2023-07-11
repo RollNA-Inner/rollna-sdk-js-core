@@ -1,7 +1,7 @@
 import { Numbers } from "web3";
 import { BaseContractInstance } from "./baseRollUp";
-import rollInAbi from "../abi/src/bridge/IInBox.sol/IInbox.json"
-import rollOutAbi from "../abi/src/precompiles/ArbSys.sol/ArbSys.json"
+import rollInAbi from "../abi/IInbox.json"
+import rollOutAbi from "../abi/ArbSys.json"
 import {Contract} from 'web3-eth-contract';
 
 export class NativeContractInstance extends BaseContractInstance {
