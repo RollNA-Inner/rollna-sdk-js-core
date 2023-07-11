@@ -22,11 +22,16 @@ var __importStar = (this && this.__importStar) || function (mod) {
     __setModuleDefault(result, mod);
     return result;
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.formatClaimRollOutInput = exports.getRollOutProof = exports.getRollnaInfo = exports.estimateRollInGasPrice = exports.formatRollOutERC20Input = exports.formatRollOutInput = exports.formatRollInERC20Input = exports.formatRollInInput = void 0;
+exports.formatClaimTokenInput = exports.getRollOutProof = exports.getRollnaInfo = exports.estimateRollInGasPrice = exports.formatRollOutERC20Input = exports.formatRollOutInput = exports.formatRollInERC20Input = exports.formatRollInInput = void 0;
 const types_1 = require("../types");
 const instanceFactory_1 = require("../contract/instanceFactory");
 const Web3 = __importStar(require("web3"));
+const nodeInterface_1 = require("../contract/nodeInterface");
+const IOutbox_json_1 = __importDefault(require("../abi/IOutbox.json"));
 function formatRollInInput(fromAddr, fromChainId, amount, destAddr, gas) {
     let fromChainInfo = types_1.SupportedChainInfo.getChainInfo(fromChainId);
     if (fromChainInfo != undefined) {
@@ -44,12 +49,12 @@ function formatRollInInput(fromAddr, fromChainId, amount, destAddr, gas) {
     return undefined;
 }
 exports.formatRollInInput = formatRollInInput;
-function formatRollInERC20Input(fromAddr, fromChainId, amount, tokenAddr, destAddr, gas) {
+function formatRollInERC20Input(fromAddr, fromChainId, amount, tokenAddr, destAddr, gas, gasPrice, reFundTo) {
     let fromChainInfo = types_1.SupportedChainInfo.getChainInfo(fromChainId);
     if (fromChainInfo != undefined) {
         let contractInstance = instanceFactory_1.ContractInstanceFactory.getContractInstance(true, fromChainId, tokenAddr);
         if (contractInstance != undefined) {
-            let data = contractInstance.rollIn(fromAddr, destAddr, amount);
+            let data = contractInstance.rollIn(destAddr, fromAddr, amount, reFundTo, gas);
             return {
                 from: fromAddr,
                 to: contractInstance.getRollInContractAddr(),
@@ -66,7 +71,7 @@ function formatRollOutInput(fromAddr, toChainId, amount, destAddr, gas) {
     if (toChainInfo != undefined) {
         let contractInstance = instanceFactory_1.ContractInstanceFactory.getContractInstance(false, toChainId);
         if (contractInstance != undefined) {
-            let data = contractInstance.rollOut(destAddr, toChainId, fromAddr, amount);
+            let data = contractInstance.rollOut(destAddr, toChainId);
             return {
                 from: fromAddr,
                 to: contractInstance.getRollOutContractAddr(),
@@ -83,7 +88,7 @@ function formatRollOutERC20Input(fromAddr, toChainId, amount, tokenAddr, destAdd
     if (toChainInfo != undefined) {
         let contractInstance = instanceFactory_1.ContractInstanceFactory.getContractInstance(true, toChainId, tokenAddr);
         if (contractInstance != undefined) {
-            let data = contractInstance.rollOut(destAddr, toChainId, fromAddr, amount);
+            let data = contractInstance.rollOut(destAddr, toChainId, amount, tokenAddr);
             return {
                 from: fromAddr,
                 to: contractInstance.getRollOutContractAddr(),
@@ -107,12 +112,13 @@ async function getRollnaInfo() {
 }
 exports.getRollnaInfo = getRollnaInfo;
 async function getRollOutProof(size, leaf) {
-    // need further contract information
-    return;
+    return nodeInterface_1.NodeInterfaceContract.getProof(size, leaf);
 }
 exports.getRollOutProof = getRollOutProof;
-async function formatClaimRollOutInput(from, txhash, proof, chainid) {
-    // need further contract information
-    return;
+async function formatClaimTokenInput(proof, index, lrSender, to, lrBlock, l1Block, lrTimestamp, value) {
+    var rollnaInfo = await types_1.RollnaChainInfo.getRollNaInfo();
+    var contract = new Web3.eth.contract.Contract(IOutbox_json_1.default);
+    //@ts-ignore
+    return contract.methods.executeTransaction(proof, index, lrSender, to, lrBlock, l1Block, lrTimestamp, value).encodeABI();
 }
-exports.formatClaimRollOutInput = formatClaimRollOutInput;
+exports.formatClaimTokenInput = formatClaimTokenInput;

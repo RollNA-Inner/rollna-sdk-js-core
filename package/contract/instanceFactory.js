@@ -1,22 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ContractInstanceFactory = void 0;
-const baseRollUp_1 = require("./baseRollUp");
 const nativeRollUp_1 = require("./nativeRollUp");
-class DemoContractInstance extends baseRollUp_1.BaseContractInstance {
-    rollIn(le_from, lr_to, value) {
-        return "";
-    }
-    rollOut(le_to, chainId, lr_from, value) {
-        return "";
-    }
-    getRollInContractAddr() {
-        return "";
-    }
-    getRollOutContractAddr() {
-        return "";
-    }
-}
+const ERC20RollUp_1 = require("./ERC20RollUp");
 const nativeTokenTypeList = new Map([
     [5, ["0xaaa", "0xbbb"]], //this is just a demo, waiting for contract abi and interface
 ]);
@@ -49,7 +35,7 @@ class ContractInstanceFactory {
         if (inner != undefined) {
             let contractAddrs = inner.get(tokenAddr);
             if (contractAddrs != undefined && contractAddrs.length == 2) {
-                return new DemoContractInstance(contractAddrs[0], contractAddrs[1]);
+                return new ERC20RollUp_1.ERC20ContractInstance(contractAddrs[0], contractAddrs[1]);
             }
         }
     }

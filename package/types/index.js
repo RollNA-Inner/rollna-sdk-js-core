@@ -1,9 +1,10 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.SupportedChainInfo = exports.RollnaChainInfo = void 0;
+exports.SupportedChainInfo = exports.RollnaChainInfo = exports.nodeInterfaceContractAddr = void 0;
 var https_request = require('request');
 const rollnaInfoUrl = "https://rollna.io/get_rollna_info";
 const chainInfosUrl = "https://rollna.io/get_chain_infos";
+exports.nodeInterfaceContractAddr = "0xfffffffff";
 class RollnaChainInfo {
     static rollnaInfo;
     constructor() { }
