@@ -1,0 +1,11 @@
+[
+    "function constructOutboxProof(uint64,uint64) view returns (bytes32, bytes32, bytes32[])",
+    "function estimateRetryableTicket(address,uint256,address,uint256,address,address,bytes)",
+    "function findBatchContainingBlock(uint64) view returns (uint64)",
+    "function gasEstimateComponents(address,bool,bytes) payable returns (uint64, uint64, uint256, uint256)",
+    "function gasEstimateL1Component(address,bool,bytes) payable returns (uint64, uint256, uint256)",
+    "function getL1Confirmations(bytes32) view returns (uint64)",
+    "function legacyLookupMessageBatchProof(uint256,uint64) view returns (bytes32[], uint256, address, address, uint256, uint256, uint256, uint256, bytes)",
+    "function nitroGenesisBlock() pure returns (uint256)"
+  ]
+  

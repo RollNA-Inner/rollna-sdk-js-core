@@ -61,12 +61,12 @@ function formatRollInERC20Input(fromAddr, fromChainId, amount, tokenAddr, destAd
     return undefined;
 }
 exports.formatRollInERC20Input = formatRollInERC20Input;
-function formatRollOutInput(fromAddr, fromChainId, amount, destAddr, gas) {
-    let fromChainInfo = types_1.SupportedChainInfo.getChainInfo(fromChainId);
-    if (fromChainInfo != undefined) {
-        let contractInstance = instanceFactory_1.ContractInstanceFactory.getContractInstance(false, fromChainId);
+function formatRollOutInput(fromAddr, toChainId, amount, destAddr, gas) {
+    let toChainInfo = types_1.SupportedChainInfo.getChainInfo(toChainId);
+    if (toChainInfo != undefined) {
+        let contractInstance = instanceFactory_1.ContractInstanceFactory.getContractInstance(false, toChainId);
         if (contractInstance != undefined) {
-            let data = contractInstance.rollOut(fromAddr, destAddr, amount);
+            let data = contractInstance.rollOut(destAddr, toChainId, fromAddr, amount);
             return {
                 from: fromAddr,
                 to: contractInstance.getRollOutContractAddr(),
@@ -78,12 +78,12 @@ function formatRollOutInput(fromAddr, fromChainId, amount, destAddr, gas) {
     return undefined;
 }
 exports.formatRollOutInput = formatRollOutInput;
-function formatRollOutERC20Input(fromAddr, fromChainId, amount, tokenAddr, destAddr, gas) {
-    let fromChainInfo = types_1.SupportedChainInfo.getChainInfo(fromChainId);
-    if (fromChainInfo != undefined) {
-        let contractInstance = instanceFactory_1.ContractInstanceFactory.getContractInstance(true, fromChainId, tokenAddr);
+function formatRollOutERC20Input(fromAddr, toChainId, amount, tokenAddr, destAddr, gas) {
+    let toChainInfo = types_1.SupportedChainInfo.getChainInfo(toChainId);
+    if (toChainInfo != undefined) {
+        let contractInstance = instanceFactory_1.ContractInstanceFactory.getContractInstance(true, toChainId, tokenAddr);
         if (contractInstance != undefined) {
-            let data = contractInstance.rollOut(fromAddr, destAddr, amount);
+            let data = contractInstance.rollOut(destAddr, toChainId, fromAddr, amount);
             return {
                 from: fromAddr,
                 to: contractInstance.getRollOutContractAddr(),

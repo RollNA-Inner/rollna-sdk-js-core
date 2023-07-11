@@ -1,14 +1,12 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.ContractInstanceFactory = exports.BaseContractInstance = void 0;
-class BaseContractInstance {
-}
-exports.BaseContractInstance = BaseContractInstance;
-class DemoContractInstance extends BaseContractInstance {
+exports.ContractInstanceFactory = void 0;
+const baseRollUp_1 = require("./baseRollUp");
+class DemoContractInstance extends baseRollUp_1.BaseContractInstance {
     rollIn(le_from, lr_to, value) {
         return "";
     }
-    rollOut(lr_from, le_to, value) {
+    rollOut(le_to, chainId, lr_from, value) {
         return "";
     }
     getRollInContractAddr() {
@@ -19,11 +17,11 @@ class DemoContractInstance extends BaseContractInstance {
     }
 }
 const nativeTokenTypeList = new Map([
-    [5, DemoContractInstance], //this is just a demo, waiting for contract abi and interface
+    [5, ["0xaaa", "0xbbb"]], //this is just a demo, waiting for contract abi and interface
 ]);
 const ERC20TokenTypeList = new Map([
     [5, new Map([
-            ["0xfffff", DemoContractInstance], //this is just a demo, waiting for contract abi and interface
+            ["0xfffff", ["0xaaa", "0xbbb"]], //this is just a demo, waiting for contract abi and interface
         ])],
 ]);
 class ContractInstanceFactory {
@@ -40,17 +38,17 @@ class ContractInstanceFactory {
         }
     }
     static getNativeInstance(chainId) {
-        let constructFunc = nativeTokenTypeList.get(chainId);
-        if (constructFunc != undefined) {
-            return new constructFunc();
+        let contractAddrs = nativeTokenTypeList.get(chainId);
+        if (contractAddrs != undefined && contractAddrs.length == 2) {
+            return new DemoContractInstance(contractAddrs[0], contractAddrs[1]);
         }
     }
     static getERC20Instance(chainId, tokenAddr) {
         let inner = ERC20TokenTypeList.get(chainId);
         if (inner != undefined) {
-            let constructFunc = inner.get(tokenAddr);
-            if (constructFunc != undefined) {
-                return new constructFunc();
+            let contractAddrs = inner.get(tokenAddr);
+            if (contractAddrs != undefined && contractAddrs.length == 2) {
+                return new DemoContractInstance(contractAddrs[0], contractAddrs[1]);
             }
         }
     }

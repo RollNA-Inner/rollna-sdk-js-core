@@ -1,18 +1,15 @@
-import { BigNumberish } from "@ethersproject/bignumber";
+import { Numbers } from "web3";
+import {BaseContractInstance} from "./baseRollUp"
+import {NativeContractInstance} from "./nativeRollUp"
 
-export abstract class BaseContractInstance {
-    abstract rollIn(le_from : string, lr_to : string, value : BigNumberish) : string;
-    abstract rollOut(lr_from : string, le_to : string, value : BigNumberish) : string;
-    abstract getRollInContractAddr() : string
-    abstract getRollOutContractAddr() : string
-}
+
 
 class DemoContractInstance extends BaseContractInstance{
 
-    rollIn(le_from : string, lr_to : string, value : BigNumberish) {
+    rollIn(le_from : string, lr_to : string, value : Numbers) {
         return ""
     }
-    rollOut(lr_from : string, le_to : string, value : BigNumberish) {
+    rollOut(le_to : string, chainId : Number, lr_from : string, value : Numbers) {
         return ""
     }
     getRollInContractAddr() {
@@ -23,13 +20,13 @@ class DemoContractInstance extends BaseContractInstance{
     }
 }
 
-const nativeTokenTypeList = new Map<number, any>([// mapping from chainid to contract instance construct function
-    [5, DemoContractInstance], //this is just a demo, waiting for contract abi and interface
+const nativeTokenTypeList = new Map<number, Array<string>>([// mapping from chainid to contract instance construct function
+    [5, ["0xaaa", "0xbbb"]], //this is just a demo, waiting for contract abi and interface
 ]);
 
-const ERC20TokenTypeList = new Map<number, Map<string, any>>([// mapping from chainid to contract instance construct function
+const ERC20TokenTypeList = new Map<number, Map<string, Array<string>>>([// mapping from chainid to contract instance construct function
     [5, new Map([
-        ["0xfffff", DemoContractInstance],//this is just a demo, waiting for contract abi and interface
+        ["0xfffff", ["0xaaa", "0xbbb"]],//this is just a demo, waiting for contract abi and interface
     ])],
 ]);
 
@@ -48,17 +45,17 @@ export class ContractInstanceFactory {
         }
     } 
     private static getNativeInstance(chainId: number) : BaseContractInstance|undefined {
-        let constructFunc = nativeTokenTypeList.get(chainId)
-        if (constructFunc != undefined) {
-            return new constructFunc()
+        let contractAddrs = nativeTokenTypeList.get(chainId)
+        if (contractAddrs != undefined && contractAddrs.length == 2) {
+            return new NativeContractInstance(contractAddrs[0], contractAddrs[1])
         }
     }
     private static getERC20Instance(chainId: number, tokenAddr: string) : BaseContractInstance|undefined {
         let inner = ERC20TokenTypeList.get(chainId)
         if (inner != undefined) {
-            let constructFunc = inner.get(tokenAddr)
-            if (constructFunc != undefined) {
-                return new constructFunc()
+            let contractAddrs = inner.get(tokenAddr)
+            if (contractAddrs != undefined && contractAddrs.length == 2) {
+                return new DemoContractInstance(contractAddrs[0], contractAddrs[1])
             }
         }
 
