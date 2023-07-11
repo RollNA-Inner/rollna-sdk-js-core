@@ -5,7 +5,7 @@ import * as Web3 from "web3"
 
 export function formatRollInInput(
     fromAddr : string, 
-    fromChainId: number, 
+    fromChainId: Numbers, 
     amount: Numbers, 
     destAddr: string,
     gas: Numbers
@@ -28,17 +28,19 @@ export function formatRollInInput(
 
 export function formatRollInERC20Input(
     fromAddr : string, 
-    fromChainId: number, 
+    fromChainId: Numbers, 
     amount: Numbers, 
     tokenAddr: string,
     destAddr: string,
-    gas: Numbers
+    gas: Numbers,
+    gasPrice: Numbers,
+    reFundTo: string,
     ) : CommonInput | undefined {
         let fromChainInfo = SupportedChainInfo.getChainInfo(fromChainId)
         if (fromChainInfo != undefined) {
             let contractInstance = ContractInstanceFactory.getContractInstance(true, fromChainId, tokenAddr);
             if (contractInstance != undefined) {
-               let data = contractInstance.rollIn(fromAddr, destAddr, amount)
+               let data = contractInstance.rollIn(destAddr, fromAddr, amount, reFundTo, gas,)
                return {
                    from: fromAddr,
                    to: contractInstance.getRollInContractAddr(),
@@ -52,7 +54,7 @@ export function formatRollInERC20Input(
 
 export function formatRollOutInput(
     fromAddr : string, 
-    toChainId: number, 
+    toChainId: Numbers, 
     amount: Numbers, 
     destAddr: string,
     gas: Numbers
@@ -61,7 +63,7 @@ export function formatRollOutInput(
         if (toChainInfo != undefined) {
             let contractInstance = ContractInstanceFactory.getContractInstance(false, toChainId);
             if (contractInstance != undefined) {
-               let data = contractInstance.rollOut(destAddr, toChainId, fromAddr, amount)
+               let data = contractInstance.rollOut(destAddr, toChainId)
                return {
                    from: fromAddr,
                    to: contractInstance.getRollOutContractAddr(),
@@ -75,7 +77,7 @@ export function formatRollOutInput(
 
 export function formatRollOutERC20Input(
     fromAddr : string, 
-    toChainId: number, 
+    toChainId: Numbers, 
     amount: Numbers, 
     tokenAddr: string,
     destAddr: string,
@@ -85,7 +87,7 @@ export function formatRollOutERC20Input(
         if (toChainInfo != undefined) {
             let contractInstance = ContractInstanceFactory.getContractInstance(true, toChainId, tokenAddr);
             if (contractInstance != undefined) {
-               let data = contractInstance.rollOut(destAddr, toChainId, fromAddr, amount)
+               let data = contractInstance.rollOut(destAddr, toChainId, amount, tokenAddr)
                return {
                    from: fromAddr,
                    to: contractInstance.getRollOutContractAddr(),

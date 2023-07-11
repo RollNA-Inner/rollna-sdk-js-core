@@ -1,4 +1,3 @@
-import { BigNumberish } from "@ethersproject/bignumber";
 import { Numbers } from "web3";
 var https_request = require('request');
 
@@ -30,7 +29,7 @@ export interface RollOutProof {
 
 export type RollnaInfo = {
     rollnaProvider: string;
-    rollnaChainId: number;
+    rollnaChainId: Numbers;
     rollnaTokenSymbols: string;
 }
 
@@ -67,18 +66,18 @@ export class RollnaChainInfo {
 }
 
 export class SupportedChainInfo {
-    protected static ChainInfos : Map<number, ChainInfo>;
+    protected static ChainInfos : Map<Numbers, ChainInfo>;
     private  constructor() {}
     static async updateChainInfos() {
         await https_request({url: chainInfosUrl}, function(err: any, response: any, body: any) {
             if(!err && response.statusCode == 200)  {
-                const infoJson = JSON.parse(body) as Map<number, ChainInfo>;
+                const infoJson = JSON.parse(body) as Map<Numbers, ChainInfo>;
                 SupportedChainInfo.ChainInfos = infoJson;
             }
        })
     }
 
-    static async getChainInfo(chainId : number) {
+    static async getChainInfo(chainId : Numbers) {
         if (!SupportedChainInfo.ChainInfos) {
             await SupportedChainInfo.updateChainInfos();
         }
